@@ -25,8 +25,6 @@ public class RegisterForm {
 	private JTextField startyearText;
 	private JPasswordField passwordField;
 	private JTextField lastText;
-	private int maxNumber;
-	private int randomNumber;
 	private String id;
 	private String ln;
 	private String fn;
@@ -34,6 +32,7 @@ public class RegisterForm {
 	private int age;
 	private String email;
 	private String Password;
+	private UUID uuid ;
 
 	public RegisterForm() {
 		if (!ranOnce) {
@@ -49,9 +48,8 @@ public class RegisterForm {
 				}
 			});
 		}
+		this.uuid= null;
 		this.d = new DemoDataBase();
-		this.maxNumber = 0;
-		this.randomNumber = 0;
 		this.id = " ";
 		this.ln = " ";
 		this.fn = " ";
@@ -80,12 +78,11 @@ public class RegisterForm {
 				startYear = startyearText.getText();
 				fn = nameText.getText();
 				ln = lastText.getText();
-				maxNumber = 10;
-				randomNumber = rand.nextInt(maxNumber) + 1;
-				id = String.valueOf(randomNumber);
+				UUID uuid = UUID.randomUUID();
+				id = uuid.toString();;
 				try {
 					d.EntireDateBase(id, fn, ln, email, age, startYear, Password);
-					d.currentUser(email, Password, startYear);
+					d.currentUser(id, Password, startYear);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -194,9 +191,10 @@ public class RegisterForm {
 	public boolean security(String email, int age, String startYear, String password, String fn, String ln) {
 		DemoDataBase d = new DemoDataBase();
 		String temp= " ";
-		File file = new File("C:/Users/monke/Java_Projects/Systems Analysis/UpdatedDateBase.txt");
+		String s = d.getThePath();
+		File file = new File(s);
 		if(!file.exists()) {
-		File file1 = new File("UpdatedDateBase.txt");
+		File file1 = new File("UpdatedDataBase.txt");
 		JOptionPane.showMessageDialog(null, "Please Click again on Confirm", "Processing Details", JOptionPane.INFORMATION_MESSAGE);
 		try {
 			if(file1.createNewFile()){

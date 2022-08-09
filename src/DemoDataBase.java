@@ -3,24 +3,105 @@ import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
-
 public class DemoDataBase {
 
 	public DemoDataBase() {
 	}
 
-	public boolean checkIfItsExists(String Email, String password) throws FileNotFoundException {
-		File file = new File("C:/Users/monke/Java_Projects/Systems Analysis/UpdatedDateBase.txt");
-		if(!file.exists()) {
-		File file1 = new File("UpdatedDateBase.txt");
-		JOptionPane.showMessageDialog(null, "You Need To Register", "Register Error", JOptionPane.INFORMATION_MESSAGE);
-		try {
-			if(file1.createNewFile()){
-				return false;
+	public static String ClearCurrentUserPath(String temp1) {
+		char c = '\\';
+		String s = "";
+		System.out.println(temp1);
+		for (int i = 0; i < temp1.length(); i++) {
+			if (temp1.charAt(i) == c) {
+				s += '/';
+			} else {
+				s += temp1.charAt(i);
 			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			if (temp1.charAt(i) == ':') {
+				s += '/';
+			}
+			if (temp1.charAt(i) == '>') {
+				s = s.substring(0, i + 1);
+				s += '/';
+				break;
+			}
 		}
+		s += "DataBase.txt";
+		return s;
+	}
+
+	public String CurrentUserPath() {
+		String s = null;
+		String[] cmd = new String[] { "resources/path.cmd" };
+		ProcessBuilder pb = new ProcessBuilder(cmd);
+		try {
+			Process p = pb.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			if (reader.readLine() != null) {
+				String temp = ClearCurrentUserPath(reader.readLine().toString());
+				return temp;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return s;
+	}
+
+	public String getThePath() {
+		String s = null;
+		String[] cmd = new String[] { "resources/path.cmd" };
+		ProcessBuilder pb = new ProcessBuilder(cmd);
+		try {
+			Process p = pb.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			if (reader.readLine() != null) {
+				String temp = clearThePath(reader.readLine().toString());
+				return temp;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return s;
+	}
+
+	public String clearThePath(String temp1) {
+		char c = '\\';
+		String s = "";
+		System.out.println(temp1);
+		for (int i = 0; i < temp1.length(); i++) {
+			if (temp1.charAt(i) == c) {
+				s += '/';
+			} else {
+				s += temp1.charAt(i);
+			}
+			if (temp1.charAt(i) == ':') {
+				s += '/';
+			}
+			if (temp1.charAt(i) == '>') {
+				s = s.substring(0, i + 1);
+				s += '/';
+				break;
+			}
+		}
+		s += "UpdatedDataBase.txt";
+		return s;
+	}
+
+	public boolean checkIfItsExists(String Email, String password) throws FileNotFoundException {
+		String s = getThePath();
+		File file = new File(s);
+		if (!file.exists()) {
+			File file1 = new File("UpdatedDataBase.txt");
+			JOptionPane.showMessageDialog(null, "You Need To Register", "Register Error",
+					JOptionPane.INFORMATION_MESSAGE);
+			try {
+				if (file1.createNewFile()) {
+					return false;
+				}
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 		int count = 0;
 		Scanner scan = new Scanner(file);
@@ -34,7 +115,7 @@ public class DemoDataBase {
 			}
 			if (temp.indexOf(password) != -1 && password.length() == pass.length()) {
 				pass = password;
-				if(email.equals(Email)){
+				if (email.equals(Email)) {
 					break;
 				}
 			}
@@ -43,8 +124,10 @@ public class DemoDataBase {
 			}
 			count++;
 		}
-		if(email.equals("") && pass.equals("")) {return false;}
-		if (email.equals(Email) && pass.equals(password) && count  < 7) {
+		if (email.equals("") && pass.equals("")) {
+			return false;
+		}
+		if (email.equals(Email) && pass.equals(password) && count < 7) {
 			return true;
 		}
 		return false;
@@ -69,17 +152,17 @@ public class DemoDataBase {
 				count = 0;
 			}
 			try {
-			if (temp.indexOf("Date") != -1) {
-				date = temp.substring(6, temp.length());
-				if (email != " " && pass != " ") {
-					break;
-				} else {
-					email = " ";
-					pass = " ";
-				}
+				if (temp.indexOf("Date") != -1) {
+					date = temp.substring(6, temp.length());
+					if (email != " " && pass != " ") {
+						break;
+					} else {
+						email = " ";
+						pass = " ";
+					}
 
-			}
-			} catch (StringIndexOutOfBoundsException e1){
+				}
+			} catch (StringIndexOutOfBoundsException e1) {
 				return " ";
 			}
 			count++;
@@ -91,9 +174,9 @@ public class DemoDataBase {
 	}
 
 	public void EntireDateBase(String id, String fn, String ln, String Email, int age, String StartYear,
-		String password) throws IOException {
+			String password) throws IOException {
 		int count = 0;
-		try (FileWriter fw = new FileWriter("UpdatedDateBase.txt", true);
+		try (FileWriter fw = new FileWriter("UpdatedDataBase.txt", true);
 				BufferedWriter bw = new BufferedWriter(fw);
 				PrintWriter pw = new PrintWriter(bw)) {
 			pw.println("-----------------------");
@@ -108,14 +191,16 @@ public class DemoDataBase {
 		} catch (IOException e) {
 			System.out.println(e.toString());
 		}
-		if(checkIfEmailAlreadyExists(Email)){};
+		if (checkIfEmailAlreadyExists(Email)) {
+		}
+		;
 	}
 
 	public void currentUser(String userName, String Password, String date) throws IOException {
 		File file = new File("DataBase.txt");
 		FileWriter fw = new FileWriter(file);
 		PrintWriter pw = new PrintWriter(fw);
-		pw.println("Email: " + userName);
+		pw.println("ID: " + userName);
 		pw.println("Password: " + Password);
 		pw.println("Date: " + date);
 		pw.close();
@@ -123,20 +208,20 @@ public class DemoDataBase {
 
 	public boolean checkIfEmailAlreadyExists(String Email) throws FileNotFoundException {
 		try {
-		File file = new File("C:/Users/monke/Java_Projects/Systems Analysis/UpdatedDateBase.txt");
+			String s = getThePath();
+			File file = new File(s);
 
-		Scanner scan = new Scanner(file);
-		String email = " ";
-		while (scan.hasNextLine()) {
-			String temp = scan.nextLine();
-			if (temp.indexOf(Email) != -1) {
-				email = Email;
-				return true;
+			Scanner scan = new Scanner(file);
+			String email = " ";
+			while (scan.hasNextLine()) {
+				String temp = scan.nextLine();
+				if (temp.indexOf(Email) != -1) {
+					email = Email;
+					return true;
+				}
 			}
-		}
-		}
-		catch (FileNotFoundException e) {
-			File file = new File("UpdatedDateBase.txt");
+		} catch (FileNotFoundException e) {
+			File file = new File("UpdatedDataBase.txt");
 			e.printStackTrace();
 		}
 		return false;
